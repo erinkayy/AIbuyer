@@ -1,105 +1,379 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useTheme } from './ThemeContext';
+import { products } from '../data/products';
+import { ProductCard } from '../components/ProductCard';
+import { Navigation } from '../components/Navigation';
+import { VersionSwitcher } from '../components/VersionSwitcher';
+import Image from 'next/image';
+import FlowerIllustrations from '../components/FlowerIllustrations';
+import PaperCutFlowers from '../components/PaperCutFlowers';
+
+// Standard Layout Component
+const StandardLayout = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const categories = ['all', ...new Set(products.map(product => product.category))];
+
+  const filteredProducts = products.filter(product =>
+    (selectedCategory === 'all' || product.category === selectedCategory) &&
+    (product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
+  );
+
+  const renderStandardLayout = () => (
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <div className="relative h-[600px] sm:h-[700px] overflow-hidden">
+        <div className="absolute inset-0 bg-gray-200" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent" />
+        <div className="relative h-full max-w-[90rem] mx-auto px-16 sm:px-32 lg:px-48 flex items-center">
+          <div className="space-y-12">
+            <h1 className="text-5xl sm:text-6xl font-bold text-gray-900">
+              Welcome to <span className="text-teal-600">Le Jardin</span>
+            </h1>
+            <p className="text-xl text-gray-600 max-w-lg">
+              Discover our collection of premium plants, carefully selected to bring nature's beauty into your home.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6">
+              <button className="px-10 py-5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-lg">
+                Shop Now
+              </button>
+              <button className="px-10 py-5 border-2 border-teal-600 text-teal-600 rounded-lg hover:bg-teal-50 transition-colors text-lg">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Featured Plants Section */}
+      <section className="py-24 px-16 sm:px-32 lg:px-48">
+        <div className="max-w-[90rem] mx-auto">
+          <h2 className="text-3xl font-bold text-gray-900 mb-12">Featured Plants</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onClick={() => console.log(`Selected ${product.name}`)}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+
+  return (
+    <>
+      <VersionSwitcher />
+      {renderStandardLayout()}
+    </>
+  );
+};
+
+// Tropical Layout Component
+const TropicalLayout = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedTag, setSelectedTag] = useState<string>('all');
+  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
+
+  const allTags = ['all', ...new Set(products.flatMap(product => product.tags))];
+
+  const filteredProducts = products.filter(product =>
+    (selectedTag === 'all' || product.tags.includes(selectedTag)) &&
+    (product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const renderTropicalLayout = () => (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-orange-100 to-orange-50">
+      {/* Hero Section */}
+      <div className="relative h-[600px] sm:h-[700px] overflow-hidden">
+        <div className="absolute inset-0 bg-gray-200" />
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-50/80 to-transparent" />
+        <div className="relative h-full max-w-[90rem] mx-auto px-12 sm:px-24 lg:px-32 flex items-center">
+          <div className="space-y-8 text-center lg:text-left">
+            <h1 className="text-5xl sm:text-6xl font-bold font-serif italic text-orange-900">
+              Welcome to <span className="text-orange-600">Le Jardin</span>
+            </h1>
+            <p className="text-xl text-orange-800 font-serif italic max-w-lg mx-auto lg:mx-0">
+              Discover our collection of premium plants, carefully selected to bring nature's beauty into your home.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button className="px-8 py-4 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-all hover:scale-105 font-serif italic">
+                Shop Now
+              </button>
+              <button className="px-8 py-4 border-2 border-orange-600 text-orange-600 rounded-full hover:bg-orange-50 transition-all hover:scale-105 font-serif italic">
+                Learn More
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Featured Plants Section */}
+      <div className="py-24 px-12 sm:px-24 lg:px-32">
+        <h2 className="text-4xl font-bold font-serif italic text-orange-900 text-center mb-12">Featured Plants</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+          {products.slice(0, 8).map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <VersionSwitcher />
+      {renderTropicalLayout()}
+    </>
+  );
+};
+
+// Boho Layout Component
+const BohoLayout = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [savedProducts, setSavedProducts] = useState<number[]>([]);
+  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const toggleSaveProduct = (productId: number) => {
+    setSavedProducts(prev => 
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const renderBohoLayout = () => (
+    <div className="min-h-screen bg-amber-50">
+      {/* Hero Section */}
+      <div className="relative h-[600px] sm:h-[700px] overflow-hidden">
+        <div className="absolute inset-0 bg-gray-200" />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-50/80 to-transparent" />
+        <div className="relative h-full max-w-[90rem] mx-auto px-12 sm:px-24 lg:px-32 flex items-center">
+          <div className="max-w-[120rem] mx-auto w-full">
+            <div className="flex flex-col items-center">
+              <h1 className="text-[12rem] font-black text-[#2D2D2B] leading-none tracking-tight">
+                le jardin
+              </h1>
+              <div className="mt-16 text-center">
+                <div className="flex flex-col sm:flex-row gap-8 justify-center">
+                  <button className="px-16 py-8 bg-[#2D2D2B] text-white rounded-lg hover:bg-[#1D1D1B] transition-all hover:scale-105 font-serif text-2xl">
+                    SHOP NOW
+                  </button>
+                  <button className="px-16 py-8 border-4 border-[#2D2D2B] text-[#2D2D2B] rounded-lg hover:bg-[#2D2D2B]/5 transition-all hover:scale-105 font-serif text-2xl">
+                    LEARN MORE
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Featured Plants Section */}
+      <div className="py-24 px-12 sm:px-24 lg:px-32 bg-white">
+        <div className="max-w-[120rem] mx-auto">
+          <h2 className="text-6xl font-black text-[#2D2D2B] text-center mb-32">
+            FEATURED PLANTS
+          </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
+            {products.slice(0, 4).map((product, index) => (
+              <div key={product.id}>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <VersionSwitcher />
+      {renderBohoLayout()}
+    </>
+  );
+};
+
+// Cyber Layout Component
+const CyberLayout = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showAR, setShowAR] = useState(false);
+  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
+
+  const categories = ['all', ...new Set(products.map(product => product.category))];
+
+  const filteredProducts = products.filter(product =>
+    (selectedCategory === 'all' || product.category === selectedCategory) &&
+    (product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  const renderCyberLayout = () => (
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
+      {/* Hero Section */}
+      <div className="relative h-[600px] sm:h-[700px] overflow-hidden">
+        <div className="absolute inset-0 bg-gray-200" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-transparent" />
+        <div className="relative h-full max-w-[90rem] mx-auto px-12 sm:px-24 lg:px-32 flex items-center">
+          <div className="space-y-12">
+            <h1 className="text-5xl sm:text-6xl font-bold font-mono text-blue-400">
+              WELCOME TO <span className="text-blue-300">LE JARDIN</span>
+            </h1>
+            <p className="text-xl text-blue-200 font-mono max-w-lg">
+              DISCOVER OUR COLLECTION OF PREMIUM PLANTS, CAREFULLY SELECTED TO BRING NATURE'S BEAUTY INTO YOUR HOME.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6">
+              <button className="px-10 py-5 bg-blue-500 text-white rounded-none hover:bg-blue-400 transition-all hover:scale-105 font-mono border-2 border-blue-400">
+                {'>'} SHOP NOW
+              </button>
+              <button className="px-10 py-5 border-2 border-blue-400 text-blue-400 rounded-none hover:bg-blue-900/50 transition-all hover:scale-105 font-mono">
+                {'>'} LEARN MORE
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Featured Plants Section */}
+      <div className="py-24 px-12 sm:px-24 lg:px-32">
+        <h2 className="text-4xl font-bold font-mono text-blue-400 text-center mb-24">{'>'} FEATURED PLANTS</h2>
+        <div className="max-w-[90rem] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {products.slice(0, 8).map((product) => (
+            <div key={product.id} className="transform hover:scale-105 transition-all duration-300 border border-blue-400/30 h-[500px]">
+              <ProductCard key={product.id} product={product} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <VersionSwitcher />
+      {renderCyberLayout()}
+    </>
+  );
+};
+
+// Mystical Layout Component
+const MysticalLayout = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [cauldronItems, setCauldronItems] = useState<number[]>([]);
+  const [activeSpell, setActiveSpell] = useState<string | null>(null);
+
+  const magicalProperties = {
+    1: "Enhances creativity and brings good fortune",
+    2: "Protects against negative energy and promotes healing",
+    3: "Attracts abundance and prosperity",
+    4: "Brings peace and harmony to any space",
+    5: "Enhances spiritual growth and intuition",
+    6: "Promotes love and positive relationships"
+  };
+
+  const spells = [
+    { name: "Growth Charm", description: "Accelerates plant growth and vitality" },
+    { name: "Protection Ward", description: "Shields plants from pests and disease" },
+    { name: "Abundance Spell", description: "Increases plant yield and health" }
+  ];
+
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const toggleCauldronItem = (productId: number) => {
+    setCauldronItems(prev => 
+      prev.includes(productId)
+        ? prev.filter(id => id !== productId)
+        : [...prev, productId]
+    );
+  };
+
+  const renderMysticalLayout = () => (
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
+      {/* Hero Section */}
+      <div className="relative h-[600px] sm:h-[700px] overflow-hidden">
+        <div className="absolute inset-0 bg-gray-200" />
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/80 to-transparent" />
+        <div className="relative h-full max-w-[90rem] mx-auto px-12 sm:px-24 lg:px-32 flex items-center">
+          <div className="space-y-8">
+            <h1 className="text-5xl sm:text-6xl font-bold font-serif italic text-purple-300">
+              Welcome to <span className="text-purple-400">Le Jardin</span>
+            </h1>
+            <p className="text-xl text-purple-200 font-serif italic max-w-lg">
+              Discover our collection of premium plants, carefully selected to bring nature's magic into your home.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button className="px-8 py-4 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-all hover:scale-105 font-serif italic shadow-lg shadow-purple-500/50">
+                Cast Spell
+              </button>
+              <button className="px-8 py-4 border-2 border-purple-400 text-purple-300 rounded-full hover:bg-purple-900/50 transition-all hover:scale-105 font-serif italic shadow-lg shadow-purple-500/20">
+                Learn Magic
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Featured Plants Section */}
+      <div className="py-24 px-12 sm:px-24 lg:px-32">
+        <h2 className="text-4xl font-bold font-serif italic text-purple-300 text-center mb-12">Magical Plants</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {products.slice(0, 6).map((product, index) => (
+            <div key={product.id} className={`transform hover:rotate-${index % 2 === 0 ? '1' : '-1'} transition-transform duration-300`}>
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <VersionSwitcher />
+      {renderMysticalLayout()}
+    </>
+  );
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <h1 className="text-4xl font-bold">Hi, Eric</h1>
-        <p className="text-xl">Thanks, Eric</p>
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const { version } = useTheme();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  return (
+    <>
+      <VersionSwitcher />
+      {version === 'standard' && <StandardLayout />}
+      {version === 'tropical' && <TropicalLayout />}
+      {version === 'boho' && <BohoLayout />}
+      {version === 'cyber' && <CyberLayout />}
+      {version === 'mystical' && <MysticalLayout />}
+    </>
   );
 }
