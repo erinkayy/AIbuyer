@@ -1,31 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTheme } from './ThemeContext';
 import { products } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
-import { Navigation } from '../components/Navigation';
 import { VersionSwitcher } from '../components/VersionSwitcher';
-import Image from 'next/image';
-import FlowerIllustrations from '../components/FlowerIllustrations';
-import PaperCutFlowers from '../components/PaperCutFlowers';
 
 // Standard Layout Component
 const StandardLayout = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
-  const [showModal, setShowModal] = useState(false);
-
-  const categories = ['all', ...new Set(products.map(product => product.category))];
-
-  const filteredProducts = products.filter(product =>
-    (selectedCategory === 'all' || product.category === selectedCategory) &&
-    (product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase())))
-  );
-
   const renderStandardLayout = () => (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
@@ -38,7 +20,7 @@ const StandardLayout = () => {
               Welcome to <span className="text-teal-600">Le Jardin</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-lg">
-              Discover our collection of premium plants, carefully selected to bring nature's beauty into your home.
+              Discover our collection of premium plants, carefully selected to bring nature&apos;s beauty into your home.
             </p>
             <div className="flex flex-col sm:flex-row gap-6">
               <button className="px-10 py-5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-lg">
@@ -80,20 +62,6 @@ const StandardLayout = () => {
 
 // Tropical Layout Component
 const TropicalLayout = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState<string>('all');
-  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
-
-  const allTags = ['all', ...new Set(products.flatMap(product => product.tags))];
-
-  const filteredProducts = products.filter(product =>
-    (selectedTag === 'all' || product.tags.includes(selectedTag)) &&
-    (product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
   const renderTropicalLayout = () => (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-orange-100 to-orange-50">
       {/* Hero Section */}
@@ -106,7 +74,7 @@ const TropicalLayout = () => {
               Welcome to <span className="text-orange-600">Le Jardin</span>
             </h1>
             <p className="text-xl text-orange-800 font-serif italic max-w-lg mx-auto lg:mx-0">
-              Discover our collection of premium plants, carefully selected to bring nature's beauty into your home.
+              Discover our collection of premium plants, carefully selected to bring nature&apos;s beauty into your home.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <button className="px-8 py-4 bg-orange-600 text-white rounded-full hover:bg-orange-700 transition-all hover:scale-105 font-serif italic">
@@ -142,25 +110,6 @@ const TropicalLayout = () => {
 
 // Boho Layout Component
 const BohoLayout = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [savedProducts, setSavedProducts] = useState<number[]>([]);
-  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
-
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const toggleSaveProduct = (productId: number) => {
-    setSavedProducts(prev => 
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
-
   const renderBohoLayout = () => (
     <div className="min-h-screen bg-amber-50">
       {/* Hero Section */}
@@ -195,7 +144,7 @@ const BohoLayout = () => {
             FEATURED PLANTS
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-32">
-            {products.slice(0, 4).map((product, index) => (
+            {products.slice(0, 4).map((product) => (
               <div key={product.id}>
                 <ProductCard product={product} />
               </div>
@@ -216,21 +165,6 @@ const BohoLayout = () => {
 
 // Cyber Layout Component
 const CyberLayout = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [showAR, setShowAR] = useState(false);
-  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
-
-  const categories = ['all', ...new Set(products.map(product => product.category))];
-
-  const filteredProducts = products.filter(product =>
-    (selectedCategory === 'all' || product.category === selectedCategory) &&
-    (product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
   const renderCyberLayout = () => (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
       {/* Hero Section */}
@@ -243,7 +177,7 @@ const CyberLayout = () => {
               WELCOME TO <span className="text-blue-300">LE JARDIN</span>
             </h1>
             <p className="text-xl text-blue-200 font-mono max-w-lg">
-              DISCOVER OUR COLLECTION OF PREMIUM PLANTS, CAREFULLY SELECTED TO BRING NATURE'S BEAUTY INTO YOUR HOME.
+              DISCOVER OUR COLLECTION OF PREMIUM PLANTS, CAREFULLY SELECTED TO BRING NATURE&apos;S BEAUTY INTO YOUR HOME.
             </p>
             <div className="flex flex-col sm:flex-row gap-6">
               <button className="px-10 py-5 bg-blue-500 text-white rounded-none hover:bg-blue-400 transition-all hover:scale-105 font-mono border-2 border-blue-400">
@@ -281,40 +215,6 @@ const CyberLayout = () => {
 
 // Mystical Layout Component
 const MysticalLayout = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<typeof products[0] | null>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [cauldronItems, setCauldronItems] = useState<number[]>([]);
-  const [activeSpell, setActiveSpell] = useState<string | null>(null);
-
-  const magicalProperties = {
-    1: "Enhances creativity and brings good fortune",
-    2: "Protects against negative energy and promotes healing",
-    3: "Attracts abundance and prosperity",
-    4: "Brings peace and harmony to any space",
-    5: "Enhances spiritual growth and intuition",
-    6: "Promotes love and positive relationships"
-  };
-
-  const spells = [
-    { name: "Growth Charm", description: "Accelerates plant growth and vitality" },
-    { name: "Protection Ward", description: "Shields plants from pests and disease" },
-    { name: "Abundance Spell", description: "Increases plant yield and health" }
-  ];
-
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    product.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const toggleCauldronItem = (productId: number) => {
-    setCauldronItems(prev => 
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
-        : [...prev, productId]
-    );
-  };
-
   const renderMysticalLayout = () => (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-purple-800 to-purple-900">
       {/* Hero Section */}
@@ -327,7 +227,7 @@ const MysticalLayout = () => {
               Welcome to <span className="text-purple-400">Le Jardin</span>
             </h1>
             <p className="text-xl text-purple-200 font-serif italic max-w-lg">
-              Discover our collection of premium plants, carefully selected to bring nature's magic into your home.
+              Discover our collection of premium plants, carefully selected to bring nature&apos;s magic into your home.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="px-8 py-4 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-all hover:scale-105 font-serif italic shadow-lg shadow-purple-500/50">

@@ -12,7 +12,6 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   const { version } = useTheme();
-  const [isHovered, setIsHovered] = useState(false);
 
   const getThemeStyles = () => {
     switch (version) {
@@ -95,8 +94,6 @@ export const ProductCard = ({ product, onClick }: ProductCardProps) => {
   return (
     <div
       className={styles.container}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
       onClick={onClick}
     >
       <div className="relative">
