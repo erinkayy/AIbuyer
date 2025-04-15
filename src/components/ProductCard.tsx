@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Product } from '../data/products';
 import { useTheme } from '../app/ThemeContext';
 import Image from 'next/image';

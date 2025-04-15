@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useTheme } from './ThemeContext';
 import { products } from '../data/products';
 import { ProductCard } from '../components/ProductCard';
